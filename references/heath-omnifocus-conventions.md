@@ -45,15 +45,13 @@ About half of tasks have **no tags at all**. Tags are for filtering, not labelin
 | `Errands` → `Supermarket`, `Hardware Store`, `Department Store`, `Pharmacy` | Out-of-house trips ("Pick up rx from CVS" → `Pharmacy`) |
 | `Mac` | Tasks that need the computer, used for setup/publish-type work ("Create public GitHub repo", "Order Certified Marriage Certificate"). Optional, since most Claude-session tasks are computer tasks anyway. |
 | `finance`, `taxes`, `benefits`, `subscriptions`, `health`, `career`, `car`, `cats`, `travel`, `home`, `bike` | Area tags. Use one when it adds filtering value; `finance` is common even inside finance projects. |
-| `writing`, `review` | Drafting and review work. `Writing` (capitalized) is a duplicate slated for cleanup, so use `writing`. |
+| `writing`, `review` | Drafting and review work. |
 | `short~15min`, `med~1hr`, `long~4+hrs` | Time context. Rarely used; prefer `estimatedMinutes`. |
 | `GTD`, `admin` | Heath's review routines. **Don't use.** |
 | `🔴P1`/`🟡P2`/`🟢P3`, `Projects/*`, `Teams/*` | Unused or stale. **Don't use** unless asked. |
 | `blocked`, `delegated` *(on hold)* | Exist but are unused. Prefer `waiting`. |
 
 **Casing convention (Heath, 2026-09-24):** tags are lowercase unless they name a person or other proper noun (a specific place, company, or product: `Erica`, `Figma`, `Mac`). Many older tags are capitalized anyway (`Errands`, `Pharmacy`, `Computer`, `Job Search`). Use them as they are; just don't propose new ones in that style.
-
-Watch out for near-duplicate tags (`Writing`/`writing`, `Interview Prep`/`interview-prep`) and one-off tags that look accidental ("Wiki CRUD testing"). When a lowercase and a capitalized version both exist, use the lowercase one. A cleanup task for these is in GTD System (created 2026-09-24).
 
 ## 3. Date conventions observed
 
