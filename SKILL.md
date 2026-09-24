@@ -55,7 +55,7 @@ Always go through the OmniFocus MCP server (`mcp__omnifocus__*`). Load the tool 
 **Look for existing matches for every harvested item.** Go from cheap and broad to targeted:
 1. `get_project_tasks` for the 1–3 projects most of the items likely belong to, plus `get_inbox_tasks`. One call often surfaces most of the matches at once.
 2. For items about someone who has a person tag (family, manager): `list_tasks` with `completed: false, tagNames: ["<Name>"]`. This finds "Check on dad after melanoma operation" when the session said "call Dad after his follow-up".
-3. Keyword searches, **only for items still unmatched**: `list_tasks` with `completed: false` and `search: "<keyword>"`. **Use `completed: false`, not `taskStatus: "remaining"`.** The server's "remaining" filter only keeps Available and Blocked tasks, so it silently drops Next, Due Soon, and Overdue tasks, which are exactly the ones most likely to match. Search is one case-insensitive substring match on name and note, so run 1–3 short, distinctive keywords per item: a proper noun, product, or account name ("ESPP", "Powder House", "EOB", "Epic") rather than a phrase. Expect substring noise ("ski" also matches "skill"). The results include project, dates, and tags. Avoid the generic `search` tool for this, since it also returns every completed instance of recurring tasks.
+3. Keyword searches, **only for items still unmatched**: `list_tasks` with `completed: false` and `search: "<keyword>"`. `completed: false` returns open tasks of every status (Available, Next, Due Soon, Overdue, Blocked), which is what a duplicate scan needs. Search is one case-insensitive substring match on name and note, so run 1–3 short, distinctive keywords per item: a proper noun, product, or account name ("ESPP", "Powder House", "EOB", "Epic") rather than a phrase. Expect substring noise ("ski" also matches "skill"). The results include project, dates, and tags. Avoid the generic `search` tool for this, since it also returns every completed instance of recurring tasks.
 
 Read `references/heath-omnifocus-conventions.md` the first time you run this skill in a session. It describes how Heath's projects and tags are used, with real examples.
 
@@ -145,14 +145,14 @@ OmniFocus/GTD system upkeep (cleaning up tags, adjusting perspectives, restructu
 
 Never create a project, folder, or tag without Heath's explicit approval in the preview. For a proposed new project, suggest a name (an outcome phrase like "Launch Taskify skill"), a folder, and sequential vs. parallel.
 
-Use `projectId`, not `projectName`, when creating tasks. The server matches names exactly and takes the first hit, which can be a dropped project with the same name.
+Use `projectId`, not `projectName`, when creating tasks. IDs are unambiguous. (When several projects share a name, the server picks the active or on-hold one and errors on a tie, but an ID avoids the question.)
 
 If the project has an existing parent task or action group that a new task clearly belongs in (Heath's phase groups like "After first Figma paycheck", or a small outcome like "Set up laptop"), put it there with `parentTaskId` and show that in the preview. The one-level limit applies to what you create; nesting a flat task under Heath's existing parent is fine. Otherwise put it at the project's top level.
 
 **Someday/maybe items** must never land in an active project, where they'd show up as available next actions. They belong in an **on-hold** project in the `Someday/Maybe…` folder. General ideas ("someday build a Raycast extension") go in **Ideas** (on hold, in Someday/Maybe). Things to watch or read go in **Watch/Read List**, restaurants in **Restaurants to Try**, music in **Music**. If none fits, ask. Someday items get no dates and only a topical tag if one is obvious.
 
 ### Tags
-**Use existing tags whenever one fits.** Copy tag names exactly (case, emoji, spacing) from the live `list_tags` output. The MCP server **silently creates a new tag** for any name passed to `tags` that doesn't match exactly, and Heath's tag list already has accidental near-duplicates (`Writing`/`writing`). A typo would quietly add another one.
+**Use existing tags whenever one fits.** Copy tag names exactly (case, emoji, spacing) from the live `list_tags` output. The MCP server rejects any name in `tags` that doesn't match an existing tag exactly, and its error suggests near matches (Heath's list already has accidental near-duplicates like `Writing`/`writing`). Fix the name rather than retrying with `createMissingTags: true`; approved new tags are created with `create_tag` first (see step 6).
 
 **A new tag is sometimes the right call**: an ongoing relationship Heath will keep raising things with (a new manager, a recurring collaborator), a new recurring context, or a new area of life. **One-off contacts never get a person tag.** Put the person's name in the task name and use a mode tag (`email`, `calls`) if one applies. When no existing tag fits and one would really help Heath filter, **propose** it in the preview. Give the name, the parent (e.g. under `People`), active or on-hold status, and one line on why no existing tag works. Don't create it until he approves. If he declines, drop the tag from those tasks rather than substituting something close but wrong. Before proposing, check that a near-duplicate doesn't already exist under a different case or spelling.
 
@@ -179,14 +179,12 @@ The default is **no dates**. Every date you add should reflect something real th
 
 Turn every relative date ("Friday", "next week", "end of month") into an absolute date from today's date. For "next week" with no specific day, use Monday.
 
-**Always generate date values with the helper script.** Never pass a bare `YYYY-MM-DD`: the server parses it as UTC midnight, which is the previous evening in Pacific time.
+**Default times: pass a bare `YYYY-MM-DD`.** The server (omnifocus-mcp 1.3.0+) reads it as that local date at Heath's default times: defer 12:00 AM, planned 9:00 AM, due 5:00 PM.
+
+**Any other time: use the helper script.** It prints an ISO timestamp with the correct PDT or PST offset.
 ```bash
-~/.claude/skills/taskify/scripts/of_date.sh 2026-10-15 defer    # 00:00 local
-~/.claude/skills/taskify/scripts/of_date.sh 2026-10-15 planned  # 09:00 local
-~/.claude/skills/taskify/scripts/of_date.sh 2026-10-15 due      # 17:00 local
 ~/.claude/skills/taskify/scripts/of_date.sh 2026-10-15 14:30    # explicit time
 ```
-It prints an ISO timestamp with the correct PDT or PST offset.
 
 ### Flag and estimate
 - **Flag** only if Heath said it's urgent or important, or it blocks something time-sensitive this week. Otherwise leave it unflagged.

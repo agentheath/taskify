@@ -63,7 +63,7 @@ Watch out for near-duplicate tags (`Writing`/`writing`, `Interview Prep`/`interv
 - **Due dates are for hard deadlines only** (GTD; Heath confirmed 2026-09-24). 74 of 400 completed tasks had one, nearly all real deadlines (payments, claims, filings). Soft "should do by" dates go in **planned**, with the reason in the note.
 - **Default times:** defer 00:00, planned 09:00, due 17:00 unless there's a specific time.
 - **Flags** mark things to do in the next few days (bills, pickups, onboarding info right before the start date). About a quarter of tasks are flagged, but default to unflagged.
-- Timezone: America/Los_Angeles. Use `scripts/of_date.sh` to get correct offsets.
+- Timezone: America/Los_Angeles. A bare `YYYY-MM-DD` gets the default times above; use `scripts/of_date.sh` for any other time.
 
 ## 4. Good tasks vs. over-granular tasks (real examples)
 

@@ -1,9 +1,9 @@
 #!/bin/bash
 # Print an OmniFocus-ready ISO 8601 timestamp WITH the local UTC offset.
 #
-# The OmniFocus MCP server does `new Date(value)`, so a bare "2026-09-28" is read
-# as UTC midnight -- which lands on the *previous evening* in Pacific time. Always
-# pass the output of this script instead of a bare date.
+# omnifocus-mcp 1.3.0+ reads a bare "2026-09-28" as that local date at the default
+# defer/planned/due time, so this script is only needed for other times. (Older
+# servers read a bare date as UTC midnight, the previous evening in Pacific time.)
 #
 # Usage: of_date.sh YYYY-MM-DD [defer|planned|due|HH:MM]
 #   defer   -> 00:00 local (start of day; matches Heath's existing defer dates)
